@@ -40,9 +40,15 @@ function main(): void {
   const firstRun = !existsSync(store.file)
   const overlays = new OverlayManager(() => store.value)
   // Run from a clone (`npm start`), the login item is Electron's exe plus this
-  // project folder. Not offered under the Vite dev server, which wouldn't be
-  // running at sign-in.
-  const loginItem = app.isPackaged ? {} : { path: process.execPath, args: [app.getAppPath()] }
+  // project folder. The portable .exe runs from a temporary folder it unpacks
+  // on every launch, so it registers the .exe the user saved instead. Not
+  // offered under the Vite dev server, which wouldn't be running at sign-in.
+  const portableExe = process.env['PORTABLE_EXECUTABLE_FILE']
+  const loginItem = !app.isPackaged
+    ? { path: process.execPath, args: [app.getAppPath()] }
+    : portableExe
+      ? { path: portableExe }
+      : {}
   const launchAtLoginAvailable = !DEV_SERVER_URL
   const launchAtLogin = (): boolean =>
     launchAtLoginAvailable && app.getLoginItemSettings(loginItem).openAtLogin

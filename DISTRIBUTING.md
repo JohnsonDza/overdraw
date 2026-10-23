@@ -5,7 +5,24 @@ and run `npm ci` and `npm start`, as the [README](README.md) explains. That need
 no code signing, and Windows doesn't block it. This page covers the optional
 alternative: packaged `.exe` and `.zip` builds.
 
-## 1. Share a test build (no accounts needed)
+## 1. Send one file to friends (easiest for non-technical people)
+
+```bash
+npm.cmd run dist:portable
+```
+
+This makes `release\Overdraw-<version>.exe`, a single file. Your friend
+double-clicks it and Overdraw starts in the tray; there's nothing to install
+or unzip. Each launch takes a few seconds while it unpacks itself. You can
+build it even on a PC with Smart App Control on, because unlike the installer
+it doesn't run anything unsigned during the build.
+
+It's unsigned, so on your friend's PC Windows shows *"Windows protected your
+PC"*: they click **More info → Run anyway** once. If their PC has Smart App
+Control on, Windows blocks it outright and they can't run it until it's signed
+(section 4).
+
+## 2. Share a test build as a zip (no accounts needed)
 
 ```bash
 npm run dist:zip
@@ -21,9 +38,9 @@ the licence files.
    wasn't altered.
 3. Tell them it's unsigned: Windows will say *"Windows protected your PC"* →
    **More info → Run anyway**. On PCs with **Smart App Control** on, unsigned
-   apps can't run at all; those testers need a signed build (section 3).
+   apps can't run at all; those testers need a signed build (section 4).
 
-## 2. Build installers on GitHub (recommended)
+## 3. Build installers on GitHub
 
 The NSIS installer can't be built on a PC with Smart App Control on (the build
 runs an unsigned helper). GitHub's Windows runners don't have that problem.
@@ -44,13 +61,13 @@ The Release workflow only runs when you start it by hand:
 3. Open **Actions → Release → Run workflow**. Choose the tag under *Use workflow
    from* to also attach the files to a **draft** release, or a branch to just get
    them as a downloadable artifact. It builds `Overdraw-Setup-1.0.0.exe`
-   (installer), `Overdraw-1.0.0-portable.exe`, the zip, and `SHA256SUMS.txt`.
+   (installer), `Overdraw-1.0.0.exe` (portable), the zip, and `SHA256SUMS.txt`.
 
 Releases of a private repository are only visible to people with access. To give
 testers a public download link, publish the release from a public repository
 (it can contain just releases, no code), or upload the files elsewhere.
 
-## 3. Turn on code signing (removes the warnings)
+## 4. Turn on code signing (removes the warnings)
 
 Using **Azure Artifact Signing** ($9.99/month; individuals must be in the US or
 Canada):
@@ -76,7 +93,7 @@ SmartScreen reputation over the first downloads.
 Outside the US or Canada, buy an OV certificate from a certificate authority
 instead and configure it under `win.signtoolOptions` in `electron-builder.yml`.
 
-## 4. Sell it
+## 5. Sell it
 
 The simplest route is the **Microsoft Store**. Registration is free for
 individuals; Microsoft signs MSIX packages (so there's no certificate to buy) and
