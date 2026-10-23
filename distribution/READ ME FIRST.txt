@@ -1,0 +1,64 @@
+OVERDRAW — TEST BUILD
+Draw, annotate and diagram on top of anything on your screen.
+
+This is a pre-release build for testing, provided as-is without warranty.
+It works fully offline and collects no data.
+
+
+INSTALL (about one minute)
+
+1. Make sure you got this file directly from the person who made it.
+
+2. Right-click the .zip file > Properties. If you see "This file came from
+   another computer…", tick "Unblock" and press OK. This stops Windows
+   asking about the app every time you open it.
+
+3. Extract the zip to a folder you will keep, for example
+   Documents\Overdraw. Don't run it from inside the zip.
+
+4. Open Overdraw.exe. Nothing pops up: Overdraw lives in the system tray
+   (click the ^ arrow next to the clock if you don't see its icon).
+
+   If Windows shows "Windows protected your PC", click "More info", then
+   "Run anyway". This appears because the test build is not yet signed.
+
+   If Windows says "Smart App Control blocked an app", this test build
+   can't run on your PC. Signed releases will.
+
+
+USE IT
+
+  Alt+Shift+P   Start drawing on the screen under your mouse (or click the tray icon)
+  Esc           Finish drawing (ink stays on screen, clicks go to your apps)
+  Alt+Shift+H   Hide or show all ink
+  Alt+Shift+X   Clear the screen (Ctrl+Z while drawing brings it back)
+  Alt+Shift+4   Screenshot with your ink (saved to Pictures\Overdraw)
+
+While drawing: P pen, M highlighter, K laser pointer, R rectangle,
+A arrow, T text, E eraser, Ctrl+Z undo. Change shortcuts in the tray menu
+under Settings.
+
+Games: run the game in borderless or windowed mode. Exclusive full screen
+can't show any overlay.
+
+
+START WITH WINDOWS
+
+Tray icon > right-click > Launch at Login.
+
+
+UNINSTALL
+
+Right-click the tray icon > Quit Overdraw, then delete the folder.
+Settings are kept in %APPDATA%\Overdraw; delete that folder too if you like.
+
+
+FEEDBACK
+
+Please tell the developer:
+  - your Windows version and screen setup (number of monitors, scaling %)
+  - what you were doing, what you expected, and what happened instead
+  - a screenshot if something looks wrong
+
+
+Third-party licences are listed in THIRD_PARTY_NOTICES.txt.

@@ -1,0 +1,248 @@
+/* ── Window surface ─────────────────────────────────────────────────────── */
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+body {
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--duration) var(--ease);
+}
+
+/*
+ * While drawing, paint the faintest possible tint (alpha 1/255) so every pixel
+ * of the window is hit-testable, even over "empty" screen areas.
+ */
+html[data-mode='drawing'] body {
+  background: rgba(0, 0, 0, 0.004);
+}
+html[data-mode='drawing'][data-dim='true'] body {
+  background: rgba(0, 0, 0, 0.22);
+}
+html[data-capturing='true'] body {
+  background: transparent;
+}
+
+/* Excalidraw's own container must not paint over the desktop. */
+.excalidraw,
+.excalidraw-container,
+.excalidraw .excalidraw-wysiwyg {
+  background: transparent !important;
+}
+
+/*
+ * Ink only — no editor chrome — while click-through or capturing.
+ * Opacity rather than visibility: Excalidraw sets `visibility: visible` on
+ * some footer islands, which would override a hidden parent.
+ */
+html:not([data-mode='drawing']) .excalidraw .layer-ui__wrapper,
+html[data-capturing='true'] .excalidraw .layer-ui__wrapper,
+html:not([data-mode='drawing']) .excalidraw .context-menu,
+html[data-capturing='true'] .excalidraw .context-menu,
+html:not([data-mode='drawing']) .excalidraw .popover,
+html[data-capturing='true'] .excalidraw .popover {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+
+/* ── "You are drawing" indicator ───────────────────────────────────────── */
+
+.od-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 2px var(--accent);
+  border-radius: 0;
+  opacity: 0;
+  transition: opacity var(--duration) var(--ease);
+}
+html[data-mode='drawing']:not([data-capturing='true']) .od-frame {
+  opacity: 0.7;
+}
+
+/* ── Excalidraw, restyled: neutral surfaces, system type, one accent ──── */
+
+.excalidraw {
+  --ui-font: var(--font-ui);
+  --color-primary: #0a66e8;
+  --color-primary-darker: #0057cc;
+  --color-primary-darkest: #004bb0;
+  --color-primary-hover: #0057cc;
+  --color-primary-light: #e3edfd;
+  --color-primary-light-darker: #d3e3fb;
+  --color-brand-hover: #0057cc;
+  --color-brand-active: #004bb0;
+  --color-surface-primary-container: #dce8fc;
+  --color-surface-high: #ececf0;
+  --color-surface-mid: #f2f2f5;
+  --color-surface-low: #f2f2f5;
+  --color-on-surface: #1d1d1f;
+  --island-bg-color: rgba(255, 255, 255, 0.96);
+  --color-slider-track: #d3e3fb;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --shadow-island: 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.06), 0 12px 32px rgba(0, 0, 0, 0.14);
+}
+
+.excalidraw.theme--dark {
+  --color-primary: #3b8cff;
+  --color-primary-darker: #5c9fff;
+  --color-primary-darkest: #7db3ff;
+  --color-primary-hover: #5c9fff;
+  --color-primary-light: #233a5c;
+  --color-primary-light-darker: #2b4670;
+  --color-brand-hover: #5c9fff;
+  --color-brand-active: #7db3ff;
+  --color-surface-primary-container: #233a5c;
+  --color-surface-high: #3a3a3c;
+  --color-surface-mid: #2c2c2e;
+  --color-surface-low: #2c2c2e;
+  --color-on-surface: #f5f5f7;
+  --island-bg-color: rgba(30, 30, 32, 0.96);
+  --color-slider-track: #2b4670;
+  --shadow-island: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 2px 6px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Control bar ───────────────────────────────────────────────────────── */
+
+html[data-bar='false'] .od-bar,
+html:not([data-mode='drawing']) .od-bar,
+html[data-capturing='true'] .od-bar {
+  display: none;
+}
+
+/* Centred on the screen, on the same 16 px baseline as Excalidraw's footer. */
+.od-bar {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-4);
+  z-index: 4;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 44px;
+  padding: 0 6px 0 var(--space-2);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+  box-shadow: var(--shadow-float);
+  color: var(--label);
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  pointer-events: auto;
+  user-select: none;
+}
+
+.od-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.od-separator {
+  width: 1px;
+  height: 20px;
+  background: var(--separator);
+}
+
+.od-button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-m);
+  background: transparent;
+  color: var(--label);
+  cursor: pointer;
+  transition:
+    background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease);
+}
+.od-button:hover {
+  background: var(--fill-hover);
+}
+.od-button:active {
+  background: var(--fill-pressed);
+}
+.od-button[aria-pressed='true'] {
+  background: var(--accent-fill);
+  color: var(--accent);
+}
+.od-button:disabled {
+  color: var(--label-tertiary);
+  background: transparent;
+  cursor: default;
+}
+
+.od-swatches {
+  gap: var(--space-1);
+  padding: 0 var(--space-1);
+}
+
+.od-swatch {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform var(--duration) var(--ease);
+}
+.od-swatch:hover {
+  transform: scale(1.12);
+}
+.od-swatch[aria-checked='true']::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* Excalidraw renders the canvas inverted in dark theme; mirror that for the swatches. */
+html[data-theme='dark'] .od-swatch {
+  filter: invert(93%) hue-rotate(180deg);
+}
+
+.od-done {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 var(--space-3) 0 10px;
+  border: 0;
+  border-radius: var(--radius-m);
+  background: var(--accent);
+  color: var(--on-accent);
+  font: 600 var(--text-body) / 1 var(--font-ui);
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease);
+}
+.od-done:hover {
+  background: var(--accent-hover);
+}
+.od-done svg {
+  width: 16px;
+  height: 16px;
+}
+
+.od-button:focus-visible,
+.od-done:focus-visible,
+.od-swatch:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

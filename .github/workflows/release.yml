@@ -1,0 +1,98 @@
+# OPTIONAL. Overdraw is distributed as source (see README). This workflow only
+# runs when started by hand (Actions → Release → Run workflow) and builds a
+# Windows installer, portable exe and zip on GitHub's Windows runners.
+#
+# Run from a tag (choose the tag in "Use workflow from") to also attach the
+# files to a draft release. Code signing turns on automatically once the Azure
+# Artifact Signing secrets and variables in DISTRIBUTING.md are configured.
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # create the draft release
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Package (signed when Azure Artifact Signing is configured)
+        shell: bash
+        env:
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          SIGN_ENDPOINT: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+          SIGN_ACCOUNT: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+          SIGN_PROFILE: ${{ vars.AZURE_SIGNING_PROFILE }}
+          SIGN_PUBLISHER: ${{ vars.AZURE_SIGNING_PUBLISHER }}
+        run: |
+          args=()
+          if [ -n "$AZURE_CLIENT_ID" ] && [ -n "$SIGN_ENDPOINT" ]; then
+            echo "Signing with Azure Artifact Signing"
+            args+=(
+              "-c.win.azureSignOptions.endpoint=$SIGN_ENDPOINT"
+              "-c.win.azureSignOptions.codeSigningAccountName=$SIGN_ACCOUNT"
+              "-c.win.azureSignOptions.certificateProfileName=$SIGN_PROFILE"
+              "-c.win.azureSignOptions.publisherName=$SIGN_PUBLISHER"
+            )
+          else
+            echo "::warning::Building unsigned. Windows SmartScreen will warn testers, and Smart App Control will block the files."
+          fi
+          npx electron-builder --win --publish never "${args[@]}"
+
+      - name: Checksums
+        shell: pwsh
+        run: |
+          Get-ChildItem release -File | Where-Object { $_.Extension -in '.exe', '.zip' } |
+            ForEach-Object { "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)" } |
+            Set-Content release/SHA256SUMS.txt -Encoding utf8
+          Get-Content release/SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: overdraw-windows
+          if-no-files-found: error
+          path: |
+            release/*.exe
+            release/*.zip
+            release/SHA256SUMS.txt
+
+      - name: Draft GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          draft: true
+          prerelease: true
+          generate_release_notes: true
+          files: |
+            release/*.exe
+            release/*.zip
+            release/SHA256SUMS.txt

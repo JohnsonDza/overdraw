@@ -1,0 +1,75 @@
+appId: com.overdraw.app
+productName: Overdraw
+copyright: Copyright © 2026 Overdraw
+
+directories:
+  output: release
+  buildResources: resources
+
+# Everything the app needs is bundled by electron-vite into out/;
+# no node_modules are shipped.
+files:
+  - out/main/**
+  - out/preload/**
+  - out/renderer/**
+  - package.json
+  - '!**/*.map'
+
+extraResources:
+  - from: resources
+    to: icons
+    filter: ['*.png']
+
+# Next to Overdraw.exe, alongside Electron's own LICENSE files.
+extraFiles:
+  - from: out/THIRD_PARTY_NOTICES.txt
+    to: THIRD_PARTY_NOTICES.txt
+  - from: distribution/READ ME FIRST.txt
+    to: READ ME FIRST.txt
+
+# Swap in Electron's codec-free ffmpeg.dll (see the script for why).
+afterPack: scripts/after-pack.cjs
+
+asar: true
+
+# Chromium's own UI strings only; Excalidraw ships its translations in JS.
+electronLanguages: [en-US]
+
+# Lock down the Electron binary itself.
+electronFuses:
+  runAsNode: false
+  enableCookieEncryption: true
+  enableNodeOptionsEnvironmentVariable: false
+  enableNodeCliInspectArguments: false
+  enableEmbeddedAsarIntegrityValidation: true
+  onlyLoadAppFromAsar: true
+  grantFileProtocolExtraPrivileges: false
+
+win:
+  icon: resources/icon.png
+  executableName: Overdraw
+  # Used by the zip target; nsis and portable set their own names below.
+  artifactName: Overdraw-${version}-win-${arch}.${ext}
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+    - target: zip
+      arch: [x64]
+
+# Per-user install: no administrator prompt, Start menu entry, starts after install.
+nsis:
+  oneClick: true
+  perMachine: false
+  allowElevation: false
+  createDesktopShortcut: false
+  createStartMenuShortcut: true
+  shortcutName: Overdraw
+  runAfterFinish: true
+  deleteAppDataOnUninstall: false
+  artifactName: Overdraw-Setup-${version}.${ext}
+
+portable:
+  artifactName: Overdraw-${version}-portable.${ext}
+

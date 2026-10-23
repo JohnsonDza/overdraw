@@ -1,0 +1,7 @@
+# Store text with LF line endings in the repository, whatever each
+# contributor's core.autocrlf setting is.
+* text=auto eol=lf
+
+*.png binary
+*.ico binary
+*.woff2 binary
