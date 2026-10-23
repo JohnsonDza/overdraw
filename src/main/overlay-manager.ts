@@ -36,6 +36,12 @@ class Overlay {
       maximizable: false,
       fullscreenable: false,
       skipTaskbar: true,
+      // A Windows "tool window" (WS_EX_TOOLWINDOW). Chromium-based apps
+      // (Chrome, Edge, VS Code, Discord…) stop rendering when they think an
+      // opaque window covers them; their occlusion check skips tool windows,
+      // so they keep running under the overlay. It also keeps the overlay out
+      // of Alt+Tab.
+      type: process.platform === 'win32' ? 'toolbar' : undefined,
       alwaysOnTop: true,
       focusable: false,
       thickFrame: false,
@@ -106,8 +112,17 @@ class Overlay {
     if (mode === 'drawing') {
       await this.loaded
       this.win.setIgnoreMouseEvents(false)
-      this.win.setFocusable(true)
       this.win.setAlwaysOnTop(true, 'screen-saver')
+      if (this.getSettings().keepAppFocused) {
+        // Mouse and pen input without activation: the app underneath keeps
+        // keyboard focus, so it doesn't pause the way many games do when they
+        // lose focus.
+        this.win.setFocusable(false)
+        this.win.showInactive()
+        this.win.moveTop()
+        return
+      }
+      this.win.setFocusable(true)
       this.win.show()
       this.win.moveTop()
       this.win.focus()
