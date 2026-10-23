@@ -1,0 +1,275 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font: 400 var(--text-body) / 1.4 var(--font-ui);
+  color: var(--label);
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* On Windows 11 the window is backed by Mica; let it show through a light tint. */
+html[data-material='mica'] body {
+  background: color-mix(in srgb, var(--background) 62%, transparent);
+}
+
+.window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Draggable title area; the native caption buttons sit on the right (≈ 140 px). */
+.titlebar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 140px 0 var(--space-4);
+  -webkit-app-region: drag;
+}
+.titlebar-title {
+  font-size: var(--text-footnote);
+  color: var(--label-secondary);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-2) var(--space-5) var(--space-5);
+  scrollbar-gutter: stable;
+}
+
+/* Slim, arrowless scrollbar in the style of Windows 11 / macOS overlays. */
+.content::-webkit-scrollbar {
+  width: 10px;
+}
+.content::-webkit-scrollbar-button {
+  display: none;
+}
+.content::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--fill-pressed) padding-box;
+}
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.large-title {
+  margin: 0 0 var(--space-5);
+  font: 600 var(--text-large) / 1.15 var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.section + .section {
+  margin-top: var(--space-5);
+}
+
+.section-title {
+  margin: 0 0 var(--space-2) var(--space-3);
+  font-size: var(--text-footnote);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--label-secondary);
+}
+
+.section-footer {
+  margin: var(--space-2) var(--space-3) 0;
+  font-size: var(--text-footnote);
+  color: var(--label-secondary);
+}
+
+.group {
+  border-radius: var(--radius-l);
+  background: var(--surface-raised);
+  box-shadow: 0 0 0 0.5px var(--separator);
+  overflow: hidden;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 52px;
+  padding: var(--space-3) var(--space-4);
+}
+.row + .row {
+  box-shadow: inset 0 0.5px 0 var(--separator);
+}
+
+.row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.row-title {
+  font-size: var(--text-body);
+  font-weight: 500;
+}
+.row-detail {
+  font-size: var(--text-footnote);
+  color: var(--label-secondary);
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+/* ── Controls ─────────────────────────────────────────────────────────── */
+
+.switch {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--fill-pressed);
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease);
+}
+.switch[aria-checked='true'] {
+  background: var(--accent);
+}
+.switch:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+  transition: transform var(--duration) var(--ease);
+}
+.switch[aria-checked='true'] .switch-thumb {
+  transform: translateX(16px);
+}
+
+.button {
+  height: 28px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-m);
+  background: var(--fill);
+  color: var(--label);
+  font: 500 var(--text-body) / 1 var(--font-ui);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.button:hover {
+  background: var(--fill-hover);
+}
+.button:active {
+  background: var(--fill-pressed);
+}
+
+.shortcut {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.shortcut-field {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 132px;
+  height: 30px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-m);
+  background: var(--fill);
+  color: var(--label);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color var(--duration) var(--ease),
+    box-shadow var(--duration) var(--ease);
+}
+.shortcut-field:hover {
+  background: var(--fill-hover);
+}
+.shortcut-field[data-recording='true'] {
+  background: var(--accent-fill);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.shortcut-field[data-status='conflict']:not([data-recording='true']) {
+  box-shadow: inset 0 0 0 1.5px var(--destructive);
+}
+
+.keycap {
+  min-width: 22px;
+  padding: 2px 6px;
+  border-radius: var(--radius-s);
+  background: var(--surface-raised);
+  box-shadow: 0 0 0 0.5px var(--separator), 0 1px 0 var(--separator);
+  font: 500 var(--text-footnote) / 1.3 var(--font-ui);
+  text-align: center;
+}
+
+.shortcut-placeholder {
+  color: var(--label-secondary);
+}
+
+.shortcut-status {
+  min-height: 14px;
+  font-size: var(--text-caption);
+  color: var(--label-secondary);
+}
+.shortcut-status[data-status='conflict'] {
+  color: var(--destructive);
+}
+
+.page-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-6);
+  padding: 0 var(--space-3);
+  font-size: var(--text-footnote);
+  color: var(--label-secondary);
+}
+.page-footer-actions {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+.switch:focus-visible,
+.button:focus-visible,
+.shortcut-field:focus-visible,
+.link:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
