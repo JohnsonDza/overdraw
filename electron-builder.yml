@@ -70,6 +70,8 @@ nsis:
   deleteAppDataOnUninstall: false
   artifactName: Overdraw-Setup-${version}.${ext}
 
+# One file to send to people: double-click and it runs, nothing to install.
+# Each launch unpacks the app to a temporary folder (a few seconds).
 portable:
-  artifactName: Overdraw-${version}-portable.${ext}
+  artifactName: Overdraw-${version}.${ext}
 
