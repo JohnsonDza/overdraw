@@ -51,6 +51,11 @@ npm ci
 npm start
 ```
 
+> **Windows PowerShell says "running scripts is disabled on this system"?**
+> Type `npm.cmd` instead of `npm` (for example `npm.cmd ci` and `npm.cmd start`),
+> or run the commands in Command Prompt. Nothing needs changing in Windows'
+> security settings.
+
 `npm ci` installs the exact dependency versions locked in `package-lock.json`.
 `npm start` builds Overdraw (about 20 seconds) and launches it. The very first
 start also prints `Downloading Electron binary...` and fetches Electron (about
@@ -129,6 +134,7 @@ Screenshots go to `Pictures\Overdraw` and, by default, to the clipboard.
 | Problem | Fix |
 | --- | --- |
 | `npm` or `git` is "not recognized" | Reopen the terminal after installing Node.js or Git. |
+| `npm.ps1 cannot be loaded because running scripts is disabled` | PowerShell's default policy blocks npm's PowerShell wrapper. Use `npm.cmd` in place of `npm`, or use Command Prompt. |
 | `npm ci` fails with a network error | Check your connection or proxy, then run `npm ci` again. |
 | `npm start` fails at `Downloading Electron binary...` | A network blip interrupted the download. Run `npm ci`, then `npm start` again. |
 | `npm ci` prints `allow-scripts` warnings | Expected: npm skips install scripts that Overdraw doesn't need. |
