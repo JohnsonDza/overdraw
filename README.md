@@ -36,7 +36,7 @@ rights are needed.
 ## Install and run
 
 ```bash
-git clone https://github.com/<your-username>/overdraw.git
+git clone https://github.com/JohnsonDza/overdraw.git
 ```
 
 ```bash
