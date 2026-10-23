@@ -40,7 +40,9 @@ export class SettingsStore extends EventEmitter<{ change: [Settings] }> {
 
   private load(): Settings {
     try {
-      return sanitizeSettings(JSON.parse(readFileSync(this.file, 'utf8')))
+      // Strip a UTF-8 byte-order mark: Notepad and Windows PowerShell 5 add
+      // one, and JSON.parse would reject the file and reset every setting.
+      return sanitizeSettings(JSON.parse(readFileSync(this.file, 'utf8').replace(/^﻿/, '')))
     } catch {
       return sanitizeSettings(DEFAULT_SETTINGS)
     }

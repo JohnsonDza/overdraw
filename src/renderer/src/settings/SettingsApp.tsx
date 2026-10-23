@@ -41,7 +41,13 @@ const TOGGLES: { key: BooleanSettingKey; title: string; detail: string }[] = [
     detail: 'The scroll wheel won’t pan or zoom the canvas, so ink stays aligned with what’s under it.'
   },
   { key: 'dimWhileDrawing', title: 'Dim screen while drawing', detail: 'Makes ink easier to see on busy screens.' },
-  { key: 'showControlBar', title: 'Show control bar', detail: 'Quick tools, colours and Done at the bottom of the screen.' }
+  { key: 'showControlBar', title: 'Show control bar', detail: 'Quick tools, colours and Done at the bottom of the screen.' },
+  {
+    key: 'keepAppFocused',
+    title: 'Keep the app underneath focused',
+    detail:
+      'For games and players that pause when they lose focus. Your keys keep going to that app, so pick tools from the toolbar and finish with Done or your Draw shortcut instead of Esc.'
+  }
 ]
 
 export function SettingsApp({ bridge }: { bridge: SettingsBridge }) {

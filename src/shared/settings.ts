@@ -29,6 +29,12 @@ export interface Settings {
   keepInkVisible: boolean
   /** Show the floating control bar while drawing. */
   showControlBar: boolean
+  /**
+   * Draw without taking keyboard focus from the app underneath, so games and
+   * players that pause when they lose focus keep running. Keystrokes then go
+   * to that app, so Excalidraw's keyboard shortcuts and typing are unavailable.
+   */
+  keepAppFocused: boolean
   /** Copy screenshots to the clipboard as well as saving them. */
   screenshotToClipboard: boolean
 }
@@ -44,6 +50,7 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   dimWhileDrawing: false,
   keepInkVisible: true,
   showControlBar: true,
+  keepAppFocused: false,
   screenshotToClipboard: true
 })
 
@@ -56,6 +63,7 @@ export const BOOLEAN_SETTING_KEYS: readonly BooleanSettingKey[] = [
   'dimWhileDrawing',
   'keepInkVisible',
   'showControlBar',
+  'keepAppFocused',
   'screenshotToClipboard'
 ]
 

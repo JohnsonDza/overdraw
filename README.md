@@ -123,6 +123,12 @@ When you finish, your ink stays on screen and **clicks pass straight through** t
 the apps underneath. Start drawing again to keep editing it. A screen with no
 ink hides its overlay completely, so nothing sits over your games.
 
+Apps underneath keep running while you draw: videos keep playing, and browsers
+and editors keep updating. Some games and players pause whenever they lose
+focus. For those, turn on **Settings → Keep the app underneath focused**: you
+still draw with the mouse or pen, but keystrokes go to the app, so pick tools
+from the toolbar and finish with **Done** or your Draw shortcut instead of Esc.
+
 Control bar (bottom centre while drawing): pen · highlighter · laser · colours ·
 whiteboard (hides the screen behind a blank canvas) · re-align canvas (only shown
 if you panned) · screenshot · clear · settings · **Done**.
@@ -141,6 +147,7 @@ Screenshots go to `Pictures\Overdraw` and, by default, to the clipboard.
 | Nothing happens after `npm start` | Overdraw runs in the tray, so check the **^** arrow by the clock. Only one copy runs at a time; launching it again starts drawing. |
 | A shortcut does nothing | Another app may own it. Settings marks such shortcuts in red; pick another. |
 | The overlay doesn't appear over a game | Switch the game to **borderless** or **windowed** mode. Exclusive full screen can't show any overlay. |
+| A game or player pauses while I draw | It pauses when it loses focus. Turn on **Settings → Keep the app underneath focused**. |
 | "Launch at Login" is greyed out | You started it with `npm run dev`; use `npm start`. |
 
 ## Develop
