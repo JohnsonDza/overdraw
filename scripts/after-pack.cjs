@@ -13,7 +13,7 @@ const { join } = require('node:path')
 const { inflateRawSync } = require('node:zlib')
 
 const FFMPEG_SHA256 = {
-  '44.7.0/win32-x64': '7ecf2ed358f7b3b09892ee7aaffdac8429a74e881044be15ecaac1caa79050b3'
+  '44.9.3/win32-x64': '99ab7ca87d50bf009f26bce8e60619f3df79176dcb2d091a9239eceec4febf3f'
 }
 
 /** Extracts one file from a zip archive (stored or deflated entries). */
