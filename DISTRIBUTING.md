@@ -69,7 +69,15 @@ testers a public download link, publish the release from a public repository
 
 ## 4. Turn on code signing (removes the warnings)
 
-Using **Azure Artifact Signing** ($9.99/month; individuals must be in the US or
+**Free route, for open-source projects:** Overdraw is MIT-licensed, so it can
+apply to the **SignPath Foundation** (signpath.org), which signs open-source
+Windows apps for free. They review the project against their criteria (an
+OSI-approved licence, a public repository, builds produced in CI, a published
+code-signing policy). If approved, signing runs as a step in the GitHub Actions
+release workflow. Signed builds pass Smart App Control, and they also allow the
+codec-free `ffmpeg.dll` again (see LEGAL.md).
+
+**Paid route, using Azure Artifact Signing** ($9.99/month; individuals must be in the US or
 Canada):
 
 1. In Azure, create an Artifact Signing account, complete identity validation,
