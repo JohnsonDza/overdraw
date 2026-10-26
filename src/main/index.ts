@@ -87,7 +87,11 @@ function main(): void {
     refresh()
   }
 
+  // A drawing overlay is a full-screen, topmost window that takes every click,
+  // so Settings opened beneath it (say, from the tray) could be seen but not
+  // used. Always leave draw mode first, whichever way Settings is opened.
   const openSettings = (): void => {
+    void overlays.stopDrawing()
     openSettingsWindow(() => hotkeys.setSuspended(false))
   }
 
@@ -175,10 +179,7 @@ function main(): void {
   })
 
   ipcMain.on(IPC.overlayOpenSettings, (event) => {
-    if (trusted(event) && overlays.fromSender(event)) {
-      void overlays.stopDrawing()
-      openSettings()
-    }
+    if (trusted(event) && overlays.fromSender(event)) openSettings()
   })
 
   // ── IPC: settings window ─────────────────────────────────────────────────
