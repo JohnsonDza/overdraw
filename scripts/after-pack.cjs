@@ -1,9 +1,13 @@
-// electron-builder afterPack hook.
+// electron-builder afterPack hook. OPT-IN: set OVERDRAW_CODEC_FREE_FFMPEG=1.
 //
 // Electron's default ffmpeg.dll includes patent-encumbered codecs (H.264, AAC).
-// Overdraw plays no audio or video, so it ships the codec-free ffmpeg build
-// that Electron publishes with every release instead. That keeps a commercial
-// release clear of codec patent licensing questions.
+// Overdraw plays no audio or video, so a commercial release may prefer the
+// codec-free ffmpeg build that Electron publishes with every release.
+//
+// It is off by default because Smart App Control blocks that DLL: unlike
+// Electron's default one, it has no reputation with Microsoft, and every
+// renderer loads ffmpeg.dll, so no Overdraw window can open. Only turn it on
+// for builds whose DLLs are code-signed (electron-builder `win.signDlls`).
 //
 // The download is verified against a hash pinned below. When upgrading
 // Electron, add the new version's hash from the release's SHASUMS256.txt.
@@ -44,6 +48,10 @@ function unzipEntry(zip, wanted) {
 
 exports.default = async function afterPack(context) {
   if (context.electronPlatformName !== 'win32') return
+  if (process.env.OVERDRAW_CODEC_FREE_FFMPEG !== '1') {
+    console.log("  • keeping Electron's default ffmpeg.dll (set OVERDRAW_CODEC_FREE_FFMPEG=1 to swap)")
+    return
+  }
   const version = require('electron/package.json').version
   const arch = { 1: 'x64', 3: 'arm64', 0: 'ia32' }[context.arch] ?? 'x64'
   const key = `${version}/win32-${arch}`

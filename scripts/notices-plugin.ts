@@ -119,8 +119,9 @@ export function thirdPartyNotices(options: { output: string; oflText: string }):
       const parts = [
         'OVERDRAW — THIRD-PARTY NOTICES',
         '',
-        'Overdraw includes the following third-party software and fonts. Each is',
-        'used under the licence reproduced below.',
+        'Overdraw itself is free and open source under the MIT License (LICENSE.txt).',
+        'It includes the following third-party software and fonts. Each is used',
+        'under the licence reproduced below.',
         '',
         'The Electron runtime (including Chromium) is covered by LICENSE.electron.txt',
         'and LICENSES.chromium.html, shipped next to Overdraw.exe.',

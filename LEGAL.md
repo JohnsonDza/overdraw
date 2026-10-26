@@ -9,8 +9,8 @@
 **Yes.** Everything Overdraw ships is under a licence that allows commercial
 use, modification, redistribution and sale, in a closed-source product. The
 conditions are mainly attribution, and the build now meets them automatically.
-The main open items are your own **name/trademark check**, your **own licence
-choice**, and **code signing**.
+Overdraw's own code is MIT-licensed (see [LICENSE](LICENSE)). The main open
+items are your **name/trademark check** and **code signing**.
 
 ## What ships, and under which licence
 
@@ -35,11 +35,15 @@ choice**, and **code signing**.
 - **Liberation Sans removed.** The copy inside Excalidraw's package is the 1.x
   release (GPLv2 with a font exception, not the OFL). It was only used for old
   "Helvetica" text; Windows draws that with the metric-identical Arial instead.
-- **Codec-free FFmpeg.** Electron's default `ffmpeg.dll` contains H.264/AAC
-  decoders, which are covered by patents that can require licences for
-  commercial products. Overdraw plays no media, so packaging swaps in the
-  codec-free build Electron publishes, verified against a pinned SHA-256
-  (`scripts/after-pack.cjs`).
+- **FFmpeg codecs: a choice to revisit before selling.** Electron's default
+  `ffmpeg.dll` contains H.264/AAC decoders, which are covered by patents that
+  can require licences for commercial products. Builds currently ship that
+  default DLL, as most Electron apps (VS Code, Slack, Discord) do, because
+  Windows **Smart App Control blocks the codec-free alternative**. It's unsigned
+  and has no reputation, and without `ffmpeg.dll` no Overdraw window opens.
+  Overdraw plays no media. To ship the codec-free DLL, sign the build including
+  its DLLs (`win.signDlls`) and set `OVERDRAW_CODEC_FREE_FFMPEG=1`; packaging then
+  swaps it in, verified against a pinned SHA-256 (`scripts/after-pack.cjs`).
 
 ## Things to sort out yourself
 
@@ -53,10 +57,13 @@ choice**, and **code signing**.
      that name, but it's a common word (graphics term; close to "overdraft").
      Search the trademark office in each country where you'll sell (USPTO,
      EUIPO, your national office) before you invest in the brand.
-2. **Your own licence.** `package.json` says `UNLICENSED`, meaning all rights
-   reserved: nobody may copy or resell it without your permission. That's the
-   right default for a paid app. If you'd rather open-source it, MIT is fine, but
-   then anyone may also redistribute it for free.
+2. **Your own licence: MIT.** Anyone may use, modify, redistribute or sell
+   copies of Overdraw, as long as they keep the copyright and licence notice
+   (shipped as `LICENSE.txt` next to `Overdraw.exe`). You can still sell it, or a
+   version with extra features, but others may legally give the MIT code away
+   for free. The licence also disclaims warranty, which covers that risk for
+   free copies. Code contributed by other people stays theirs, licensed to you
+   under MIT.
 3. **End-user terms.** For a paid release, add a short EULA (licence grant,
    warranty disclaimer, limitation of liability). Store platforms provide a
    standard one you can use.
@@ -65,9 +72,9 @@ choice**, and **code signing**.
 5. **Tax and payments.** Selling through the Microsoft Store, or a "merchant of
    record" service such as Paddle or Lemon Squeezy, means they collect and remit
    VAT/sales tax for you. Selling directly means you handle it.
-6. **Security fixes.** `npm audit` reports 4 low-severity issues in KaTeX (used
-   only by the Mermaid diagram import). Keep dependencies updated; Dependabot is
-   configured in `.github/dependabot.yml`.
+6. **Security fixes.** `npm audit` reports no known vulnerabilities (October
+   2026; KaTeX was patched). Keep dependencies updated; Dependabot is configured
+   in `.github/dependabot.yml`, and CI runs `npm audit` on every change.
 
 ## Distribution and code signing
 
@@ -76,6 +83,7 @@ Control). Your options, cheapest first:
 
 | Route | Cost | Notes |
 | --- | --- | --- |
+| **SignPath Foundation** | Free for open-source projects | Overdraw qualifies now that it's MIT-licensed. You apply with the public repository; signing then runs from CI. Approval is SignPath's decision. |
 | **Microsoft Store (MSIX)** | Free registration for individuals (since Sept 2025) | Microsoft signs Store MSIX packages for you, so no certificate to buy, and the Store handles payments, updates and tax. Needs ID verification; an `appx` build target and the Windows SDK. |
 | **Azure Artifact Signing** | $9.99/month | Cheapest trusted signature for downloads. *Individuals* must be in the US or Canada; organisations in more countries. Already wired into `.github/workflows/release.yml`. |
 | **OV code-signing certificate** from a CA | Roughly $200–500/year | Works anywhere; keys must live on a hardware token or cloud HSM. |

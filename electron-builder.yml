@@ -1,6 +1,6 @@
 appId: com.overdraw.app
 productName: Overdraw
-copyright: Copyright © 2026 Overdraw
+copyright: Copyright © 2026 JohnsonDza
 
 directories:
   output: release
@@ -22,12 +22,15 @@ extraResources:
 
 # Next to Overdraw.exe, alongside Electron's own LICENSE files.
 extraFiles:
+  - from: LICENSE
+    to: LICENSE.txt
   - from: out/THIRD_PARTY_NOTICES.txt
     to: THIRD_PARTY_NOTICES.txt
   - from: distribution/READ ME FIRST.txt
     to: READ ME FIRST.txt
 
-# Swap in Electron's codec-free ffmpeg.dll (see the script for why).
+# Optionally swap in Electron's codec-free ffmpeg.dll; off unless
+# OVERDRAW_CODEC_FREE_FFMPEG=1 (see the script for why).
 afterPack: scripts/after-pack.cjs
 
 asar: true

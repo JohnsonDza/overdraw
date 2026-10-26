@@ -50,17 +50,55 @@ const TOGGLES: { key: BooleanSettingKey; title: string; detail: string }[] = [
   }
 ]
 
+/** Shown instead of a blank window while settings load, or if loading fails. */
+export function SettingsNotice({ title, detail, action }: { title: string; detail?: string; action?: ReactNode }) {
+  return (
+    <div className="window">
+      <header className="titlebar">
+        <span className="titlebar-title">Overdraw</span>
+      </header>
+      <main className="content notice" role="status">
+        <h1 className="large-title">{title}</h1>
+        {detail && <p className="notice-detail">{detail}</p>}
+        {action}
+      </main>
+    </div>
+  )
+}
+
 export function SettingsApp({ bridge }: { bridge: SettingsBridge }) {
   const [snapshot, setSnapshot] = useState<SettingsSnapshot | null>(null)
+  const [loadError, setLoadError] = useState<string | null>(null)
+
+  const load = useCallback(() => {
+    setLoadError(null)
+    bridge.get().then(setSnapshot, (error: unknown) => {
+      setLoadError(error instanceof Error ? error.message : String(error))
+    })
+  }, [bridge])
 
   useEffect(() => {
-    void bridge.get().then(setSnapshot)
+    load()
     return bridge.onChange(setSnapshot)
-  }, [bridge])
+  }, [bridge, load])
 
   const onRecordingChange = useCallback((recording: boolean) => bridge.suspendHotkeys(recording), [bridge])
 
-  if (!snapshot) return null
+  if (!snapshot) {
+    return loadError ? (
+      <SettingsNotice
+        title="Settings didn’t load"
+        detail={`Overdraw couldn’t read its settings: ${loadError}`}
+        action={
+          <button type="button" className="button" onClick={load}>
+            Try Again
+          </button>
+        }
+      />
+    ) : (
+      <SettingsNotice title="Settings" detail="Loading…" />
+    )
+  }
   const { settings, hotkeyStatus } = snapshot
 
   const setHotkey = (action: HotkeyAction, accelerator: string): void => {

@@ -67,6 +67,24 @@ html[data-material='mica'] body {
   background: transparent;
 }
 
+/* Loading and error states: same title slot, one line of detail, one action. */
+.notice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+.notice .large-title {
+  margin-bottom: 0;
+}
+.notice-detail {
+  margin: 0;
+  max-width: 44ch;
+  font-size: var(--text-callout);
+  color: var(--label-secondary);
+  user-select: text;
+}
+
 .large-title {
   margin: 0 0 var(--space-5);
   font: 600 var(--text-large) / 1.15 var(--font-display);

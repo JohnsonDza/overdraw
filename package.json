@@ -3,8 +3,8 @@
   "productName": "Overdraw",
   "version": "1.0.0",
   "description": "Draw, annotate and diagram on top of anything on your screen.",
-  "author": "Overdraw",
-  "license": "UNLICENSED",
+  "author": "JohnsonDza",
+  "license": "MIT",
   "private": true,
   "main": "out/main/index.js",
   "scripts": {
