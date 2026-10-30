@@ -26,7 +26,7 @@
     "@types/react": "18.3.23",
     "@types/react-dom": "18.3.7",
     "@vitejs/plugin-react": "5.1.4",
-    "electron": "44.9.3",
+    "electron": "45.0.0",
     "electron-builder": "26.16.1",
     "electron-vite": "5.0.0",
     "perfect-freehand": "1.2.0",
